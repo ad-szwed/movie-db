@@ -73,9 +73,49 @@ let movieList = [
 app.get('/', (req, res) => {
     res.send('<h1>Movie Database by the coding szwed-shop </h1>');
 });
-
+// GET data about all movies
 app.get('/movies', (req, res) => {
     res.json(movieList);
+});
+
+// GET data about a single movie by title to the user
+app.get('/movies/title', (req, res) => {
+    res.send('Return a list of ALL movies to the user');
+});
+
+// GET data about a genre by type
+app.get('/movies/genres/type', (req, res) => {
+    res.send('Return data about a genre (description) by name/title (e.g., “Thriller”)');
+});
+
+// GET data about a director by name
+app.get('/movies/directors/name', (req, res) => {
+    res.send('Return data about a director (bio, birth year, death year) by name');
+});
+
+// POST new users to the register
+app.post('/users', (req, res) => {
+    res.send('Allow new users to register');
+});
+
+// PUT update to username
+app.put('/users/username', (req, res) => {
+    res.send('Allow users to update their user info (username)');
+});
+
+// POST movie to user's favorites
+app.post('/users/username/movies/title', (req, res) => {
+    res.send('Allow users to add a movie to their list of favorites (showing only a text that a movie has been added)');
+});
+
+// DELETE movie from user's favorites
+app.delete('/users/username/movies/title', (req, res) => {
+    res.send('Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed)');
+});
+
+// DELETE a user from registration database
+app.delete('/users/username', (req, res) => {
+    res.send('Allow existing users to deregister (showing only a text that a user email has been removed)');
 });
 
 // listen for requests
