@@ -75,7 +75,7 @@ app.get('/', (req, res) => {
 });
 // GET data about all movies
 app.get('/movies', (req, res) => {
-    res.json(movieList);
+    res.json(movieList.title);
 });
 
 // GET data about a single movie by title to the user
