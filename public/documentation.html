@@ -7,9 +7,8 @@
   <title>movie db</title>
 </head>
 <body>
-    movie db<br>
-
-    <p>Essential Features</p>
+    <h3>All queries are case sensitive! David Lynch = details / david lynch = null</h3>
+    <p>moviedb's Essential Features:</p>
     <table border="1">
         <caption>Documentation</caption>
         <tr>
@@ -32,11 +31,16 @@
             <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                Title: <br>
-                Image:<br>
-                Genre:<br>
-                Description:<br>
-                Director:<br>
+                genre: <br>
+                {<br>
+                type:<br>
+                }<br>
+                director:<br>
+                id:<br>
+                title: <br>
+                description:<br>
+                imgUrl:<br>
+                featured:<br>
                 }
             </td>
         </tr>
@@ -44,47 +48,55 @@
             <td>Return data about a single movie by title to the user</td>
             <td>/movies/title</td>
             <td style="text-align:center">GET</td>
-            <td style="text-align:center">Use underscore for space</td>
+            <td style="text-align:center">Use %20 as space</td>
             <td style="text-align:center">None</td>
-            <td style="text-align:center">/movies/bojack_horseman</td>
+            <td style="text-align:center">/movies/BoJack%20Horseman</td>
             <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                Title: BoJack Horseman<br>
-                Image: X<br>
-                Genre: Drama, Comedy, Animated<br>
-                Description: Example description<br>
-                Director: Raphael Bob-Waksberg<br>
+                genre: <br>
+                {<br>
+                type:<br>
+                }<br>
+                director:<br>
+                id:<br>
+                title: <br>
+                description:<br>
+                imgUrl:<br>
+                featured:<br>
                 }
             </td>
         <tr>
-            <td>Return data about a genre (description) by type (e.g., “Thriller”)</td>
-            <td>/movies/genres/type</td>
+            <td>Return genre by movie title</td>
+            <td>/movies/genres/title</td>
             <td style="text-align:center">GET</td>
+            <td style="text-align:center">Use %20 as space</td>
             <td style="text-align:center">None</td>
-            <td style="text-align:center">None</td>
-            <td style="text-align:center">/movies/genres/drama</td>
+            <td style="text-align:center">/movies/genres/BoJack%20Horseman</td>
             <td style="text-align:center">JSON</td>
             <td>
-                {<br>
-                Genre: drama<br>
-                }
+                {<br />
+                "$type": [],<br />
+                "type": [<br />
+                    "action",<br />
+                    "sci-fi"<br />
+                ]<br />
+            }
             </td>
         </tr>
         <tr>
             <td>Return data about a director (bio, birth year, death year) by name</td>
             <td>/movies/directors/name</td>
             <td style="text-align:center">GET</td>
-            <td style="text-align:center">Use underscore for space</td>
+            <td style="text-align:center">Use %20 as space</td>
             <td style="text-align:center">None</td>
-            <td style="text-align:center">/movies/directors/name_surname</td>
+            <td style="text-align:center">/movies/directors/David%20Lynch</td>
             <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                Name: Raphael Bob-Waksberg<br>
-                Birth year: 1984<br>
-                Death year: null<br>
-                Movies directed: BoJack Horseman<br>
+                "name":<br>
+                "bio":<br>
+                "birth":<br>
                 }
             </td>
         </tr>
@@ -92,54 +104,71 @@
             <td>Allow new users to register</td>
             <td>/users</td>
             <td style="text-align:center">POST</td>
-            <td style="text-align:center">None</td>
+            <td style="text-align:center">username, password and email required</td>
             <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                Username: username<br>
-                Password: password<br>
-                Email: example@email.com<br>
+                username:<br>
+                password:<br>
+                email:<br>
+                birthday: yyyy/mm/dd<br>
                 }
             </td>
-            <td>JSON</td>
+            <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                userID: <br>
-                Username: username<br>
-                Password: password<br>
-                Email: example@email.com<br>
+                favouriteMovies:<br>
+                _id:<br>
+                username:<br>
+                password:<br>
+                email:<br>
+                birthday: yyyy/mm/dd<br>
                 }
             </td>
         </tr>
         <tr>
-            <td>Allow users to update their username</td>
+            <td>Allow users to update their credentials</td>
             <td>/users/username</td>
             <td style="text-align:center">PUT</td>
             <td style="text-align:center">None</td>
             <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                Username: username<br>
-                New Username: username<br>
+                username:<br>
+                password:<br>
+                email:<br>
+                birthday: yyyy/mm/dd<br>
                 }
             </td>
             <td style="text-align:center">JSON</td>
             <td>
                 {<br>
-                userID: <br>
-                New Username: username<br>
+                favouriteMovies:<br>
+                _id:<br>
+                username:<br>
+                password:<br>
+                email:<br>
+                birthday: yyyy/mm/dd<br>
                 }
             </td>
         </tr>
         <tr>
-            <td>Allow users to add a movie to their list of favourites (showing only a text that a movie has been added)</td>
-            <td>/users/username/movies/title</td>
+            <td>Adding movie to favourites</td>
+            <td>/users/username/movies/movieID</td>
             <td style="text-align:center">POST</td>
-            <td style="text-align:center">None</td>
+            <td style="text-align:center">movieID required</td>
             <td style="text-align:center">JSON</td>
-            <td style="text-align:center">{<br>title<br>}</td>
-            <td style="text-align:center">message</td>
-            <td style="text-align:center">Favourite Movies:
+            <td style="text-align:center">{<br>"favouriteMovies" : "6048e1a44327f3bd100066fd"<br>}</td>
+            <td style="text-align:center">JSON</td>
+            <td style="text-align:center">
+                {<br>
+                favouriteMovies:<br>
+                _id:<br>
+                username:<br>
+                password:<br>
+                email:<br>
+                birthday: yyyy/mm/dd<br>
+                }
             </td>
         </tr>
         <tr>
@@ -147,15 +176,22 @@
             <td>/users/username/movies/title</td>
             <td style="text-align:center">DELETE</td>
             <td style="text-align:center">None</td>
-            <td style="text-align:center">None</td>
+            <td style="text-align:center">JSON</td>
             <td>/users/username/movies/title</td>
-            <td style="text-align:center">Message</td>
+            <td style="text-align:center">JSON</td>
             <td>
-                title was removed from your favourites
+                {<br>
+                favouriteMovies:<br>
+                _id:<br>
+                username:<br>
+                password:<br>
+                email:<br>
+                birthday: yyyy/mm/dd<br>
+                }
             </td>
         </tr>
         <tr>
-            <td>Allow existing users to deregister (showing only a text that a user email has been removed)</td>
+            <td>Delete existing user</td>
             <td>/users/username</td>
             <td style="text-align:center">DELETE</td>
             <td style="text-align:center">None</td>
@@ -163,7 +199,7 @@
             <td>/users/username</td>
             <td style="text-align:center">Message</td>
             <td>
-                <br>your email has been removed from our database<br>
+                <br>USERNAME was deleted<br>
             </td>
         </tr>
     </table>
