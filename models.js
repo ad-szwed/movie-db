@@ -4,7 +4,7 @@ let movieSchema = mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     genre: {
-        $type: [String]
+        name: [String]
     },
     director: {
         name: String,
