@@ -3,11 +3,16 @@ const express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser')
     mongoose = require('mongoose'),
-    Models = require('./models.js');
-
-const app = express(),
+    Models = require('./models.js'),
+    app = express(),
     Movies = Models.Movie,
-    Users = Models.User;
+    Users = Models.User,
+    passport = require('passport');
+require('./passport');
+
+let auth = require('./auth')(app);
+
+
 
 app.use(bodyParser.json());
 
@@ -32,7 +37,7 @@ app.get('/', (req, res) => {
 });
 
 // GET all movies
-app.get('/movies', (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.find()
         .then((movies) => {
             res.status(201).json(movies);
@@ -44,7 +49,7 @@ app.get('/movies', (req, res) => {
 });
 
 // GET specific movie by title
-app.get('/movies/:title', (req, res) => {
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({ title: req.params.title })
         .then((movie) => {
             res.json(movie);
@@ -56,7 +61,7 @@ app.get('/movies/:title', (req, res) => {
 });
 
 // GET data about a genre by title
-app.get('/movies/genres/:title', (req, res) => {
+app.get('/movies/genres/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({ title: req.params.title })
         .then((movie) => {
             res.status(201).json(movie.genre);
@@ -68,7 +73,7 @@ app.get('/movies/genres/:title', (req, res) => {
 });
 
 // GET director by name
-app.get('/movies/directors/:name', (req, res) => {
+app.get('/movies/directors/:name', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({ 'director.name': req.params.name })
         .then((director) => {
             res.status(201).json(director.director);
@@ -80,7 +85,7 @@ app.get('/movies/directors/:name', (req, res) => {
 });
 
 // GET a specific user
-app.get('/users/:username', (req, res) => {
+app.get('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOne({ username: req.params.username })
         .then((user) => {
             res.json(user);
@@ -92,7 +97,7 @@ app.get('/users/:username', (req, res) => {
 });
 
 // GET all users
-app.get('/users', (req, res) => {
+app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.find()
         .then((users) => {
             res.status(201).json(users);
@@ -131,7 +136,7 @@ app.post('/users', (req, res) => {
 });
 
 // PUT update to username
-app.put('/users/:username', (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate({ username: req.params.username }, {
         $set:
         {
@@ -153,7 +158,7 @@ app.put('/users/:username', (req, res) => {
 });
 
 // POST movie to user's favourites
-app.post('/users/:username/movies/:movieID', (req, res) => {
+app.post('/users/:username/movies/:movieID', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate({ username: req.params.username }, {
         $push: { favouriteMovies: req.params.movieID }
     },
@@ -169,7 +174,7 @@ app.post('/users/:username/movies/:movieID', (req, res) => {
 });
 
 // DELETE movie from user's favourites
-app.delete('/users/:username/movies/:movieID', (req, res) => {
+app.delete('/users/:username/movies/:movieID', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate({ username: req.params.username },
         { $pull: { favouriteMovies: req.params.movieID } },
         { new: true },
@@ -184,7 +189,7 @@ app.delete('/users/:username/movies/:movieID', (req, res) => {
 });
 
 // DELETE a user from database
-app.delete('/users/:username', (req, res) => {
+app.delete('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndRemove({ username: req.params.username })
         .then((user) => {
             if (!user) {
