@@ -8,7 +8,8 @@ const express = require('express'),
     Movies = Models.Movie,
     Users = Models.User,
     passport = require('passport'),
-    cors = require('cors');
+    cors = require('cors'),
+    { check, validationResult } = require('express-validator');
 
 require('./passport');
 
@@ -125,9 +126,26 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 // POST new users to the register
-app.post('/users', (req, res) => {
+app.post('/users', 
+[ // validation: username alphanumeric, pass not empty, email is email
+    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail()
+]
+,(req, res) => {
+
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    // hashing pass
     let hashedPassword = Users.hashPassword(req.body.Password);
-    Users.findOne({ username: req.body.username })
+
+    // business logic
+    Users.findOne({ username: req.body.username }) //search if username already exists
         .then((user) => {
             if (user) {
                 return res.status(400).send(req.body.username + ' already exists');
@@ -153,12 +171,27 @@ app.post('/users', (req, res) => {
 });
 
 // PUT update to username
-app.put('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', { session: false }),
+[ // validation: username alphanumeric, pass not empty, email is email
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], (req, res) => {
+
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+
+    // business logic
+    }
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOneAndUpdate({ username: req.params.username }, {
         $set:
         {
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             email: req.body.email,
             birthday: req.body.birthday
         }
