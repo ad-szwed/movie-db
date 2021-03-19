@@ -191,7 +191,7 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
         $set:
         {
             username: req.body.username,
-            password: hashedPassword,
+            password: hashedPassword, // req.body.Password
             email: req.body.email,
             birthday: req.body.birthday
         }
@@ -255,4 +255,8 @@ app.delete('/users/:username', passport.authenticate('jwt', { session: false }),
 });
 
 // listen for requests
-app.listen(7777, () => console.log('Your app is listening on port 7777.'));
+const port = process.env.PORT || 8080;
+
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
+});
