@@ -35,8 +35,8 @@ app.use(bodyParser.json());
 
 app.use(morgan('common'));
 
-//connecting mongoose with my db so it cand CRUD
-mongoose.connect('mongodb://localhost:27017/moviedb', { useNewUrlParser: true, useUnifiedTopology: true });
+//connecting mongoose with my db so it can CRUD
+mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // serving static documentation.html
 app.use(express.static('public'));
@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
 });
 
 
-// GET requests, using Express routing syntax
+// GET main page
 app.get('/', (req, res) => {
     res.send('Movie Database by the coding szwed-shop');
 });
