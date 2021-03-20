@@ -1,3 +1,5 @@
 node_modules
 .vs
 .vs/movie_api/v16/.suo
+movies.json
+users.json
