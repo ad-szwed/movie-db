@@ -50,7 +50,7 @@ app.use((err, req, res, next) => {
 
 // GET main page
 app.get('/', (req, res) => {
-    res.send('Movie Database powered by the <Coding szwed-shop>');
+    res.send('Movie Database powered by the Coding szwed-shop');
 });
 
 // GET all movies
