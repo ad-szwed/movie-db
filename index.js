@@ -13,8 +13,16 @@ const express = require('express'),
 
 require('./passport');
 
+let auth = require('./auth')(app);
+
+//connecting mongoose with my db so it can CRUD, bellow static db for testing
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
 // CORS
 app.use(cors()); //this will allow requests from all origins, otherwise uncomment bellow:
+
 // let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 // app.use(cors({
 //   origin: (origin, callback) => {
@@ -27,17 +35,8 @@ app.use(cors()); //this will allow requests from all origins, otherwise uncommen
 //   }
 // }));
 
-let auth = require('./auth')(app);
-
-
-
-app.use(bodyParser.json());
-
 app.use(morgan('common'));
-
-//connecting mongoose with my db so it can CRUD
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true});
-mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
+app.use(bodyParser.json());
 
 // serving static documentation.html
 app.use(express.static('public'));
