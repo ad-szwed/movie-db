@@ -142,7 +142,7 @@ app.post('/users',
     }
 
     // hashing pass
-    let hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.password);
 
     // business logic
     Users.findOne({ username: req.body.username }) //search if username already exists
@@ -186,7 +186,7 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
 
     // business logic
     }
-    let hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.password);
     Users.findOneAndUpdate({ username: req.params.username }, {
         $set:
         {
