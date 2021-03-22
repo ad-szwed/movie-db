@@ -14,18 +14,18 @@ const express = require('express'),
 require('./passport');
 
 // CORS
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));
+app.use(cors()); //this will allow requests from all origins, otherwise uncomment bellow:
+// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if(!origin) return callback(null, true);
+//     if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+//       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+//       return callback(new Error(message ), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 
 let auth = require('./auth')(app);
 
@@ -36,6 +36,7 @@ app.use(bodyParser.json());
 app.use(morgan('common'));
 
 //connecting mongoose with my db so it can CRUD
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // serving static documentation.html
@@ -260,3 +261,4 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
  console.log('Listening on Port ' + port);
 });
+// app.listen(7777, () => console.log('Your app is listening on port 7777.'));
