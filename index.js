@@ -13,13 +13,6 @@ const express = require('express'),
 
 require('./passport');
 
-let auth = require('./auth')(app);
-
-//connecting mongoose with my db so it can CRUD, bellow static db for testing
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true});
-mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
 // CORS
 app.use(cors()); //this will allow requests from all origins, otherwise uncomment bellow:
 
@@ -47,6 +40,11 @@ app.use((err, req, res, next) => {
     res.status(500).send('Oh no! Something is wrong!');
 });
 
+let auth = require('./auth')(app);
+
+//connecting mongoose with my db so it can CRUD, bellow static db for testing
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // GET main page
 app.get('/', (req, res) => {
