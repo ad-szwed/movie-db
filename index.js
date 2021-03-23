@@ -170,10 +170,11 @@ app.post('/users',
 
 // PUT update to username
 app.put('/users/:username', passport.authenticate('jwt', { session: false }),
+
 [ // validation: username alphanumeric, pass not empty, email is email
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
+    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail()
   ], (req, res) => {
 
     // check the validation object for errors
