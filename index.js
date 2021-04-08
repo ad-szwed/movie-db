@@ -2,7 +2,7 @@
 const express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser')
-    mongoose = require('mongoose'),
+mongoose = require('mongoose'),
     Models = require('./models.js'),
     app = express(),
     Movies = Models.Movie,
@@ -44,7 +44,7 @@ let auth = require('./auth')(app);
 
 //connecting mongoose with my db so it can CRUD, bellow static db for testing
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true});
-mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // GET main page
 app.get('/', (req, res) => {
@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
 });
 
 // GET all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', /*passport.authenticate('jwt', { session: false }),*/(req, res) => {
     Movies.find()
         .then((movies) => {
             res.status(201).json(movies);
@@ -124,87 +124,87 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 // POST new users to the register
-app.post('/users', 
-[ // validation: username alphanumeric, pass not empty, email is email
-    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('password', 'Password is required').not().isEmpty(),
-    check('email', 'Email does not appear to be valid').isEmail()
-]
-,(req, res) => {
+app.post('/users',
+    [ // validation: username alphanumeric, pass not empty, email is email
+        check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('password', 'Password is required').not().isEmpty(),
+        check('email', 'Email does not appear to be valid').isEmail()
+    ]
+    , (req, res) => {
 
-    // check the validation object for errors
-    let errors = validationResult(req);
+        // check the validation object for errors
+        let errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
 
-    // hashing pass
-    let hashedPassword = Users.hashPassword(req.body.password);
+        // hashing pass
+        let hashedPassword = Users.hashPassword(req.body.password);
 
-    // business logic
-    Users.findOne({ username: req.body.username }) //search if username already exists
-        .then((user) => {
-            if (user) {
-                return res.status(400).send(req.body.username + ' already exists');
-            } else {
-                Users
-                    .create({
-                        username: req.body.username,
-                        password: hashedPassword,
-                        email: req.body.email,
-                        birthday: req.body.birthday // yyyy/mm/dd !
-                    })
-                    .then((user) => { res.status(201).json(user) })
-                    .catch((error) => {
-                        console.error(error);
-                        res.status(500).send('Error: ' + error);
-                    })
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-            res.status(500).send('Error: ' + error);
-        });
-});
+        // business logic
+        Users.findOne({ username: req.body.username }) //search if username already exists
+            .then((user) => {
+                if (user) {
+                    return res.status(400).send(req.body.username + ' already exists');
+                } else {
+                    Users
+                        .create({
+                            username: req.body.username,
+                            password: hashedPassword,
+                            email: req.body.email,
+                            birthday: req.body.birthday // yyyy/mm/dd !
+                        })
+                        .then((user) => { res.status(201).json(user) })
+                        .catch((error) => {
+                            console.error(error);
+                            res.status(500).send('Error: ' + error);
+                        })
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send('Error: ' + error);
+            });
+    });
 
 // PUT update to username
 app.put('/users/:username', passport.authenticate('jwt', { session: false }),
 
-[ // validation: username alphanumeric, pass not empty, email is email
-    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('password', 'Password is required').not().isEmpty(),
-    check('email', 'Email does not appear to be valid').isEmail()
-  ], (req, res) => {
+    [ // validation: username alphanumeric, pass not empty, email is email
+        check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('password', 'Password is required').not().isEmpty(),
+        check('email', 'Email does not appear to be valid').isEmail()
+    ], (req, res) => {
 
-    // check the validation object for errors
-    let errors = validationResult(req);
+        // check the validation object for errors
+        let errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
 
-    // business logic
-    }
-    let hashedPassword = Users.hashPassword(req.body.password);
-    Users.findOneAndUpdate({ username: req.params.username }, {
-        $set:
-        {
-            username: req.body.username,
-            password: hashedPassword, // req.body.Password
-            email: req.body.email,
-            birthday: req.body.birthday
+            // business logic
         }
-    },
-        { new: true }, // This line makes sure that the updated document is returned
-        (err, updatedUser) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send('Error: ' + err);
-            } else {
-                res.json(updatedUser);
+        let hashedPassword = Users.hashPassword(req.body.password);
+        Users.findOneAndUpdate({ username: req.params.username }, {
+            $set:
+            {
+                username: req.body.username,
+                password: hashedPassword, // req.body.Password
+                email: req.body.email,
+                birthday: req.body.birthday
             }
-        });
-});
+        },
+            { new: true }, // This line makes sure that the updated document is returned
+            (err, updatedUser) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Error: ' + err);
+                } else {
+                    res.json(updatedUser);
+                }
+            });
+    });
 
 // POST movie to user's favourites
 app.post('/users/:username/movies/:movieID', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -256,7 +256,7 @@ app.delete('/users/:username', passport.authenticate('jwt', { session: false }),
 // listen for requests
 const port = process.env.PORT || 8080;
 
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
+app.listen(port, '0.0.0.0', () => {
+    console.log('Listening on Port ' + port);
 });
 // app.listen(7777, () => console.log('Your app is listening on port 7777.'));
