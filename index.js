@@ -1,8 +1,8 @@
 //requiring modules
 const express = require('express'),
     morgan = require('morgan'),
-    bodyParser = require('body-parser')
-mongoose = require('mongoose'),
+    bodyParser = require('body-parser'),
+    mongoose = require('mongoose'),
     Models = require('./models.js'),
     app = express(),
     Movies = Models.Movie,
