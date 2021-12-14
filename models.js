@@ -24,15 +24,21 @@ let userSchema = mongoose.Schema({
 });
 
 // BCRYPT
+/**
+ * Function to hash a password that only encrypted passwords are stored in the database
+ * @param {string} password
+ */
 userSchema.statics.hashPassword = (password) => {
     return bcrypt.hashSync(password, 10);
-  };
-  
+};
+
+/**
+ * Function to compare the hashed password in the database with the password that users enter
+ * @param {string} password
+ */
 userSchema.methods.validatePassword = function (password) {
-    console.log(password);
-    console.log(this.password);
     return bcrypt.compareSync(password, this.password);
-  };
+};
 
 let Movie = mongoose.model('Movie', movieSchema);
 let User = mongoose.model('User', userSchema);
