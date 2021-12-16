@@ -18,7 +18,7 @@ Find the Angular client repo [here](https://github.com/ad-szwed/movie-db-angular
 - Allow users to remove a movie from their list of favorites
 - Allow existing users to deregister
 
-## Core Back-End Technologies
+## Technologies used
 
 - MongoDB
 - Express.js
